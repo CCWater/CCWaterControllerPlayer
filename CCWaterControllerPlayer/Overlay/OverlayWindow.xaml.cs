@@ -44,9 +44,16 @@ public partial class OverlayWindow : Window
         RightStickVis.HistoryTracks = _rightHistoryTracks;
 
         _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-        _clockTimer.Tick += (_, _) => ClockText.Text = DateTime.Now.ToString("HH:mm:ss");
+        _clockTimer.Tick += (_, _) =>
+        {
+            var time = DateTime.Now.ToString("HH:mm:ss");
+            ClockText.Text = time;
+            WatermarkClock.Text = time;
+        };
         _clockTimer.Start();
-        ClockText.Text = DateTime.Now.ToString("HH:mm:ss");
+        var now = DateTime.Now.ToString("HH:mm:ss");
+        ClockText.Text = now;
+        WatermarkClock.Text = now;
 
         LocationChanged += (_, _) => NotifyPositionChanged();
         SizeChanged += (_, _) => NotifyPositionChanged();

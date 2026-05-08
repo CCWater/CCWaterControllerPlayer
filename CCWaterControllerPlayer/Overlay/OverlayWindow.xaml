@@ -38,8 +38,10 @@
                         FontSize="10" Padding="6,2" Cursor="Hand"/>
             </Grid>
 
-            <TextBlock Grid.Row="1" Text="CCWater" Foreground="#15FFFFFF" FontSize="28" FontWeight="Bold"
+            <TextBlock Grid.Row="1" Text="CCWater" Foreground="#30FFFFFF" FontSize="28" FontWeight="Bold"
                        HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/>
+            <TextBlock x:Name="WatermarkClock" Grid.Row="1" Foreground="#25FFFFFF" FontSize="11" FontFamily="Consolas"
+                       HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4" IsHitTestVisible="False"/>
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
