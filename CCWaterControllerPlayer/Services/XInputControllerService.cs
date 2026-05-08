@@ -96,7 +96,8 @@ public class XInputControllerService : IControllerService
     {
         int sampleCount = 0;
         long lastRateCheckTicks = _stopwatch.ElapsedTicks;
-        long targetIntervalTicks = Stopwatch.Frequency / TargetPollingRateHz;
+        int rate = Math.Clamp(TargetPollingRateHz, 100, 2000);
+        double intervalMs = 1000.0 / rate;
 
         while (!ct.IsCancellationRequested)
         {
@@ -146,28 +147,16 @@ public class XInputControllerService : IControllerService
                 lastRateCheckTicks = _stopwatch.ElapsedTicks;
             }
 
-            long remainingTicks = targetIntervalTicks - (_stopwatch.ElapsedTicks - loopStart);
-            if (remainingTicks > 0)
+            double elapsedMs = (_stopwatch.ElapsedTicks - loopStart) * 1000.0 / Stopwatch.Frequency;
+            double sleepMs = intervalMs - elapsedMs;
+            if (sleepMs >= 1.0)
             {
-                double remainingMs = remainingTicks * 1000.0 / Stopwatch.Frequency;
-                if (remainingMs > 16)
-                {
-                    await Task.Delay((int)(remainingMs - 15), ct);
-                }
-                SpinWaitUntil(loopStart + targetIntervalTicks);
+                await Task.Delay((int)sleepMs, ct);
             }
             else
             {
-                await Task.Yield();
+                await Task.Delay(1, ct);
             }
-        }
-    }
-
-    private void SpinWaitUntil(long targetTicks)
-    {
-        while (_stopwatch.ElapsedTicks < targetTicks)
-        {
-            Thread.SpinWait(1);
         }
     }
 

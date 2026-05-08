@@ -87,7 +87,7 @@ public enum RecordStatus
 
 public class AppSettings
 {
-    public int SamplingRateHz { get; set; } = 8000;
+    public int SamplingRateHz { get; set; } = 1000;
     public bool AutoDetectSamplingRate { get; set; } = true;
     public RecordingTriggerConfig TriggerConfig { get; set; } = new();
     public OverlayConfig OverlayConfig { get; set; } = new();

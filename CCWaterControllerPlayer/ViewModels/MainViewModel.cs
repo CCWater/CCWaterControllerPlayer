@@ -368,7 +368,7 @@ public partial class MainViewModel : ViewModelBase
 
         if (_controllerService != null)
         {
-            _controllerService.TargetPollingRateHz = settings.SamplingRateHz < 500 ? 8000 : settings.SamplingRateHz;
+            _controllerService.TargetPollingRateHz = Math.Clamp(settings.SamplingRateHz, 100, 2000);
         }
 
         _recordingService.UpdateSettings(settings);
@@ -452,8 +452,7 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
-            int targetRate = _settingsService.Settings.SamplingRateHz;
-            if (targetRate < 500) targetRate = 8000;
+            int targetRate = Math.Clamp(_settingsService.Settings.SamplingRateHz, 100, 2000);
 
             var xinput = new XInputControllerService();
             var devices = xinput.EnumerateDevices();
