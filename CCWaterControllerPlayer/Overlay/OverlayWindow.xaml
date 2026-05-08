@@ -1,0 +1,83 @@
+<Window x:Class="CCWaterControllerPlayer.Overlay.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:CCWaterControllerPlayer.Views"
+        Title="Controller Player Overlay"
+        Width="600" Height="320"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="CanResizeWithGrip">
+    <Border Background="#CC0D1117" CornerRadius="8" BorderBrush="#40FFFFFF" BorderThickness="1">
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="TitleBar" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Height="24" 
+                  Background="Transparent" Cursor="SizeAll">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Overlay" Foreground="#80FFFFFF" FontSize="10" 
+                           VerticalAlignment="Center" Margin="8,0,0,0"/>
+                <Button Grid.Column="1" Content="📌" Click="PinButton_Click"
+                        Background="Transparent" Foreground="#80FFFFFF" BorderThickness="0"
+                        FontSize="10" Padding="6,2" Cursor="Hand" ToolTip="Pin (lock &amp; click-through)"/>
+                <Button Grid.Column="2" Content="&#x2716;" Click="CloseButton_Click"
+                        Background="Transparent" Foreground="#80FFFFFF" BorderThickness="0"
+                        FontSize="10" Padding="6,2" Cursor="Hand"/>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="LeftStickColumn" Width="*"/>
+                    <ColumnDefinition x:Name="RightStickColumn" Width="*"/>
+                    <ColumnDefinition x:Name="RecoilColumn" Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid x:Name="LeftStickPanel">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="L" Foreground="#8000D9FF" FontSize="9" FontWeight="Bold" Margin="4,0"/>
+                    <views:TrackVisualizationControl x:Name="LeftStickVis" Grid.Row="1" Margin="2"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,2,0,2">
+                        <TextBlock x:Name="LeftXText" Text="X: 0.00" Foreground="#B000D9FF" FontSize="9" FontFamily="Consolas" Margin="0,0,8,0"/>
+                        <TextBlock x:Name="LeftYText" Text="Y: 0.00" Foreground="#B04ECB71" FontSize="9" FontFamily="Consolas"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid x:Name="RightStickPanel" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="R" Foreground="#806C63FF" FontSize="9" FontWeight="Bold" Margin="4,0"/>
+                    <views:TrackVisualizationControl x:Name="RightStickVis" Grid.Row="1" Margin="2"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,2,0,2">
+                        <TextBlock x:Name="RightXText" Text="X: 0.00" Foreground="#B06C63FF" FontSize="9" FontFamily="Consolas" Margin="0,0,8,0"/>
+                        <TextBlock x:Name="RightYText" Text="Y: 0.00" Foreground="#B0FF6B6B" FontSize="9" FontFamily="Consolas"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid x:Name="RecoilPanel" Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Recoil" Foreground="#80FFA726" FontSize="9" FontWeight="Bold" Margin="4,0"/>
+                    <views:RecoilAnalysisControl x:Name="RecoilVis" Grid.Row="1" Margin="2"/>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

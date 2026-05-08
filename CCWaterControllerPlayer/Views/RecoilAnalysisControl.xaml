@@ -1,0 +1,8 @@
+<UserControl x:Class="CCWaterControllerPlayer.Views.RecoilAnalysisControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Canvas x:Name="AnalysisCanvas" Background="Transparent" 
+                SizeChanged="AnalysisCanvas_SizeChanged"/>
+    </Grid>
+</UserControl>

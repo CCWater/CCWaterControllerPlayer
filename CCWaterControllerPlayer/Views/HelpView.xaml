@@ -1,0 +1,46 @@
+<UserControl x:Class="CCWaterControllerPlayer.Views.HelpView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:services="clr-namespace:CCWaterControllerPlayer.Services">
+    <Grid Margin="24">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="16"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Style="{StaticResource CardStyle}">
+            <StackPanel>
+                <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.HelpTitle}" 
+                           FontSize="14" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" 
+                           Margin="0,0,0,16"/>
+                <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.HelpQuickStart}"
+                        Style="{StaticResource NavButtonStyle}" Command="{Binding LoadDocCommand}" CommandParameter="quickstart"/>
+                <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.HelpFeatures}"
+                        Style="{StaticResource NavButtonStyle}" Command="{Binding LoadDocCommand}" CommandParameter="features"
+                        Margin="0,4,0,0"/>
+                <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.HelpRecording}"
+                        Style="{StaticResource NavButtonStyle}" Command="{Binding LoadDocCommand}" CommandParameter="recording"
+                        Margin="0,4,0,0"/>
+                <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.HelpVisualization}"
+                        Style="{StaticResource NavButtonStyle}" Command="{Binding LoadDocCommand}" CommandParameter="visualization"
+                        Margin="0,4,0,0"/>
+                <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.HelpOverlay}"
+                        Style="{StaticResource NavButtonStyle}" Command="{Binding LoadDocCommand}" CommandParameter="overlay"
+                        Margin="0,4,0,0"/>
+                <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.HelpFAQ}"
+                        Style="{StaticResource NavButtonStyle}" Command="{Binding LoadDocCommand}" CommandParameter="faq"
+                        Margin="0,4,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <TextBlock Text="{Binding CurrentDocContent}" 
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           FontSize="13" LineHeight="22"
+                           TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,135 @@
+<UserControl x:Class="CCWaterControllerPlayer.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:CCWaterControllerPlayer.Models"
+             xmlns:services="clr-namespace:CCWaterControllerPlayer.Services">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24">
+            <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsTitle}" 
+                       FontSize="20" FontWeight="Bold"
+                       Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,20"/>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsRecording}" 
+                               FontSize="11" FontWeight="Bold" 
+                               Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,12"/>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsTriggerButton}" 
+                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="1" 
+                                  Style="{StaticResource DarkComboBoxStyle}"
+                                  ItemContainerStyle="{StaticResource DarkComboBoxItemStyle}"
+                                  ItemsSource="{Binding AvailableTriggerButtons}"
+                                  SelectedItem="{Binding SelectedTriggerButton}"
+                                  DisplayMemberPath="DisplayName"/>
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsPreTrigger}" 
+                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Style="{StaticResource DarkTextBoxStyle}" 
+                                 Text="{Binding PreTriggerMs, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsPostTrigger}" 
+                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Style="{StaticResource DarkTextBoxStyle}" 
+                                 Text="{Binding PostTriggerMs, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsTriggerThreshold}" 
+                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                        <Slider Grid.Column="1" Minimum="0.01" Maximum="1.0" 
+                                Value="{Binding TriggerThreshold}" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <CheckBox Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsMergeConsecutive}" 
+                              IsChecked="{Binding MergeEnabled}"
+                              Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsMergeWindow}" 
+                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Style="{StaticResource DarkTextBoxStyle}" 
+                                 Text="{Binding MergeWindowMs, UpdateSourceTrigger=PropertyChanged}"
+                                 IsEnabled="{Binding MergeEnabled}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsSampling}" 
+                               FontSize="11" FontWeight="Bold" 
+                               Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,12"/>
+
+                    <CheckBox Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsAutoDetectRate}" 
+                              IsChecked="{Binding AutoDetectSamplingRate}"
+                              Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsTargetRate}" 
+                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Style="{StaticResource DarkTextBoxStyle}" 
+                                 Text="{Binding SamplingRateHz, UpdateSourceTrigger=PropertyChanged}"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsLanguage}" 
+                               FontSize="11" FontWeight="Bold" 
+                               Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,12"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.LangChinese}" 
+                                Style="{StaticResource PrimaryButtonStyle}" 
+                                Command="{Binding SwitchLanguageCommand}" CommandParameter="zh"
+                                Margin="0,0,8,0"/>
+                        <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.LangEnglish}" 
+                                Style="{StaticResource PrimaryButtonStyle}" 
+                                Command="{Binding SwitchLanguageCommand}" CommandParameter="en"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsResetDefaults}" 
+                        Style="{StaticResource NavButtonStyle}" 
+                        Command="{Binding ResetToDefaultsCommand}" Margin="0,0,12,0"/>
+                <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsSaveSettings}" 
+                        Style="{StaticResource PrimaryButtonStyle}" 
+                        Command="{Binding SaveSettingsCommand}"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

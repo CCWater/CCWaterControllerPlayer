@@ -1,0 +1,171 @@
+<UserControl x:Class="CCWaterControllerPlayer.Views.MonitorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:CCWaterControllerPlayer.Views"
+             xmlns:vm="clr-namespace:CCWaterControllerPlayer.ViewModels"
+             xmlns:services="clr-namespace:CCWaterControllerPlayer.Services">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.MonitorTitle}" 
+                   FontSize="20" FontWeight="Bold"
+                   Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,16"/>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="12"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Border Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.LeftStick2D}" 
+                               Foreground="{StaticResource SecondaryBrush}" 
+                               FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <views:TrackVisualizationControl Grid.Row="1"
+                        TrackPoints="{Binding LeftStickTrackPoints}"/>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.RightStick2D}" 
+                               Foreground="{StaticResource PrimaryBrush}" 
+                               FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <views:TrackVisualizationControl Grid.Row="1"
+                        TrackPoints="{Binding RightStickTrackPoints}"/>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="2" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.LeftStickTimeSeries}" 
+                               Foreground="{StaticResource SecondaryBrush}" 
+                               FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <views:TimeSeriesControl Grid.Row="1" Margin="0,0,0,4"
+                        DataPoints="{Binding LeftStickTimeSeriesX}"
+                        LineColor="#FF00D9FF" Label="L-X"/>
+                    <views:TimeSeriesControl Grid.Row="2"
+                        DataPoints="{Binding LeftStickTimeSeriesY}"
+                        LineColor="#FF4ECB71" Label="L-Y"/>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.RightStickTimeSeries}" 
+                               Foreground="{StaticResource PrimaryBrush}" 
+                               FontSize="12" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <views:TimeSeriesControl Grid.Row="1" Margin="0,0,0,4"
+                        DataPoints="{Binding RightStickTimeSeriesX}"
+                        LineColor="#FF6C63FF" Label="R-X"/>
+                    <views:TimeSeriesControl Grid.Row="2"
+                        DataPoints="{Binding RightStickTimeSeriesY}"
+                        LineColor="#FFFF6B6B" Label="R-Y"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="2" Style="{StaticResource CardStyle}" Margin="0,16,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="L" Foreground="{StaticResource SecondaryBrush}" FontWeight="Bold" Margin="0,0,8,0"/>
+                    <TextBlock Text="X:" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,4,0"/>
+                    <TextBlock Text="{Binding LeftX, StringFormat='{}{0:F3}'}" 
+                               Foreground="{StaticResource SecondaryBrush}" FontFamily="Consolas" Width="55"/>
+                    <TextBlock Text="Y:" Foreground="{StaticResource TextSecondaryBrush}" Margin="8,0,4,0"/>
+                    <TextBlock Text="{Binding LeftY, StringFormat='{}{0:F3}'}" 
+                               Foreground="{StaticResource SuccessBrush}" FontFamily="Consolas" Width="55"/>
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.Magnitude, StringFormat='{}{0}:'}" 
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="8,0,4,0"/>
+                    <TextBlock Text="{Binding LeftMagnitude, StringFormat='{}{0:F3}'}" 
+                               Foreground="{StaticResource WarningBrush}" FontFamily="Consolas" Width="55"/>
+                </StackPanel>
+
+                <Border Grid.Column="1" Width="1" Background="{StaticResource BorderBrush}" Margin="12,0"/>
+
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="R" Foreground="{StaticResource PrimaryBrush}" FontWeight="Bold" Margin="0,0,8,0"/>
+                    <TextBlock Text="X:" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,4,0"/>
+                    <TextBlock Text="{Binding RightX, StringFormat='{}{0:F3}'}" 
+                               Foreground="{StaticResource PrimaryBrush}" FontFamily="Consolas" Width="55"/>
+                    <TextBlock Text="Y:" Foreground="{StaticResource TextSecondaryBrush}" Margin="8,0,4,0"/>
+                    <TextBlock Text="{Binding RightY, StringFormat='{}{0:F3}'}" 
+                               Foreground="{StaticResource AccentBrush}" FontFamily="Consolas" Width="55"/>
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.Magnitude, StringFormat='{}{0}:'}" 
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="8,0,4,0"/>
+                    <TextBlock Text="{Binding RightMagnitude, StringFormat='{}{0:F3}'}" 
+                               Foreground="{StaticResource WarningBrush}" FontFamily="Consolas" Width="55"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse Width="8" Height="8" Margin="12,0,6,0">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Setter Property="Fill" Value="{StaticResource TextMutedBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MainViewModel.RecordingState}" Value="Recording">
+                                        <Setter Property="Fill" Value="{StaticResource AccentBrush}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding MainViewModel.RecordingState}" Value="PostRecording">
+                                        <Setter Property="Fill" Value="{StaticResource WarningBrush}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                    <TextBlock Foreground="{StaticResource TextSecondaryBrush}" FontSize="12">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Text" Value="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.StatusIdle}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding MainViewModel.RecordingState}" Value="Recording">
+                                        <Setter Property="Text" Value="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.StatusRecording}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding MainViewModel.RecordingState}" Value="PostRecording">
+                                        <Setter Property="Text" Value="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.StatusPostRecording}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
