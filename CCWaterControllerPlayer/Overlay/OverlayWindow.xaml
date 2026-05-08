@@ -15,6 +15,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <Grid x:Name="TitleBar" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Height="24" 
@@ -38,10 +39,12 @@
                         FontSize="10" Padding="6,2" Cursor="Hand"/>
             </Grid>
 
-            <TextBlock Grid.Row="1" Text="CCWater" Foreground="#30FFFFFF" FontSize="28" FontWeight="Bold"
-                       HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False"/>
-            <TextBlock x:Name="WatermarkClock" Grid.Row="1" Foreground="#25FFFFFF" FontSize="11" FontFamily="Consolas"
-                       HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,4" IsHitTestVisible="False"/>
+            <StackPanel x:Name="WatermarkBar" Grid.Row="2" Orientation="Horizontal" 
+                        HorizontalAlignment="Center" Margin="0,2,0,4" IsHitTestVisible="False">
+                <TextBlock Text="CCWater" Foreground="#506C63FF" FontSize="10" FontWeight="Bold" VerticalAlignment="Center"/>
+                <TextBlock x:Name="WatermarkClock" Text="00:00:00" Foreground="#40FFFFFF" FontSize="10" 
+                           FontFamily="Consolas" VerticalAlignment="Center" Margin="8,0,0,0"/>
+            </StackPanel>
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>

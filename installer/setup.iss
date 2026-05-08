@@ -2,7 +2,7 @@
 ; 使用 Inno Setup 6 编译: https://jrsoftware.org/isdl.php
 
 #define MyAppName "CCWater Controller Player"
-#define MyAppVersion "2.0.0"
+#define MyAppVersion "2.0.1"
 #define MyAppPublisher "CCWater"
 #define MyAppURL "https://github.com/CCWater/CCWaterControllerPlayer"
 #define MyAppExeName "CCWaterControllerPlayer.exe"
