@@ -123,15 +123,29 @@ public class DatabaseService : IDisposable
     public async Task<List<TrackRecord>> GetTrackRecordsAsync(string? gameName = null, string? weaponName = null)
     {
         var cmd = _connection!.CreateCommand();
-        cmd.CommandText = "SELECT * FROM TrackRecords ORDER BY CreatedAt DESC";
+        cmd.CommandText = "SELECT Id, Name, CreatedAt, TriggerStartTicks, TriggerEndTicks, SampleCount, SamplingRateHz, TrackedStick, Notes, Status FROM TrackRecords ORDER BY CreatedAt DESC";
 
         var records = new List<TrackRecord>();
         using var reader = await cmd.ExecuteReaderAsync();
         while (await reader.ReadAsync())
         {
-            records.Add(ReadTrackRecord(reader));
+            records.Add(ReadTrackRecordMeta(reader));
         }
         return records;
+    }
+
+    public async Task LoadSnapshotsAsync(TrackRecord record)
+    {
+        if (record.Snapshots.Count > 0) return;
+        var cmd = _connection!.CreateCommand();
+        cmd.CommandText = "SELECT SnapshotData FROM TrackRecords WHERE Id = @id";
+        cmd.Parameters.AddWithValue("@id", record.Id);
+        using var reader = await cmd.ExecuteReaderAsync();
+        if (await reader.ReadAsync())
+        {
+            var blob = (byte[])reader.GetValue(0);
+            record.Snapshots = DeserializeSnapshots(blob);
+        }
     }
 
     public async Task<TrackRecord?> GetTrackRecordByIdAsync(long id)
@@ -163,6 +177,28 @@ public class DatabaseService : IDisposable
         if (await reader.ReadAsync())
             return ReadTrackRecord(reader);
         return null;
+    }
+
+    private static TrackRecord ReadTrackRecordMeta(SqliteDataReader reader)
+    {
+        int statusOrdinal = -1;
+        try { statusOrdinal = reader.GetOrdinal("Status"); } catch { }
+
+        return new TrackRecord
+        {
+            Id = reader.GetInt64(reader.GetOrdinal("Id")),
+            Name = reader.GetString(reader.GetOrdinal("Name")),
+            CreatedAt = DateTime.Parse(reader.GetString(reader.GetOrdinal("CreatedAt"))),
+            TriggerStartTicks = reader.GetInt64(reader.GetOrdinal("TriggerStartTicks")),
+            TriggerEndTicks = reader.GetInt64(reader.GetOrdinal("TriggerEndTicks")),
+            SampleCount = reader.GetInt32(reader.GetOrdinal("SampleCount")),
+            SamplingRateHz = reader.GetInt32(reader.GetOrdinal("SamplingRateHz")),
+            TrackedStick = (StickSide)reader.GetInt32(reader.GetOrdinal("TrackedStick")),
+            Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes")),
+            Status = statusOrdinal >= 0 && !reader.IsDBNull(statusOrdinal) 
+                ? (RecordStatus)reader.GetInt32(statusOrdinal) 
+                : RecordStatus.Temporary
+        };
     }
 
     private static TrackRecord ReadTrackRecord(SqliteDataReader reader)

@@ -32,23 +32,23 @@ public class RecordingService : IDisposable
     public RecordingService(SettingsService settingsService)
     {
         _settingsService = settingsService;
-        int bufferSize = settingsService.Settings.SamplingRateHz * settingsService.Settings.RingBufferSeconds;
-        if (bufferSize < 1000) bufferSize = 5000;
-        _ringBuffer = new RingBuffer<ControllerSnapshot>(bufferSize);
+        _ringBuffer = new RingBuffer<ControllerSnapshot>(ComputeBufferSize(settingsService.Settings));
     }
 
     public void UpdateSettings(AppSettings settings)
     {
-        int bufferSize = settings.SamplingRateHz * settings.RingBufferSeconds;
-        if (bufferSize < 1000) bufferSize = 5000;
-        _ringBuffer = new RingBuffer<ControllerSnapshot>(bufferSize);
+        _ringBuffer = new RingBuffer<ControllerSnapshot>(ComputeBufferSize(settings));
     }
 
     public void UpdateBufferSize(int samplingRateHz)
     {
-        int bufferSize = samplingRateHz * Settings.RingBufferSeconds;
-        if (bufferSize < 1000) bufferSize = 5000;
+        int bufferSize = Math.Clamp(samplingRateHz * Settings.RingBufferSeconds, 1000, 10000);
         _ringBuffer = new RingBuffer<ControllerSnapshot>(bufferSize);
+    }
+
+    private static int ComputeBufferSize(AppSettings settings)
+    {
+        return Math.Clamp(settings.SamplingRateHz * settings.RingBufferSeconds, 1000, 10000);
     }
 
     public void OnInputReceived(ControllerSnapshot snapshot)

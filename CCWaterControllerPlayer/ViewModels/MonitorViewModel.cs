@@ -63,6 +63,8 @@ public partial class MonitorViewModel : ViewModelBase
         ActiveStickView = side;
     }
 
+    private const int MaxDisplayPoints = 500;
+
     public void UpdateLiveData(ControllerSnapshot snapshot)
     {
         var left = snapshot.LeftStick;
@@ -86,18 +88,31 @@ public partial class MonitorViewModel : ViewModelBase
         RightStickTimeSeriesX.Add(new TimeSeriesPoint(nowMs, right.X));
         RightStickTimeSeriesY.Add(new TimeSeriesPoint(nowMs, right.Y));
 
-        while (LeftStickTrackPoints.Count > 0 && LeftStickTrackPoints[0].TimestampMs < trimThreshold)
-            LeftStickTrackPoints.RemoveAt(0);
-        while (RightStickTrackPoints.Count > 0 && RightStickTrackPoints[0].TimestampMs < trimThreshold)
-            RightStickTrackPoints.RemoveAt(0);
-        while (LeftStickTimeSeriesX.Count > 0 && LeftStickTimeSeriesX[0].TimestampMs < trimThreshold)
-            LeftStickTimeSeriesX.RemoveAt(0);
-        while (LeftStickTimeSeriesY.Count > 0 && LeftStickTimeSeriesY[0].TimestampMs < trimThreshold)
-            LeftStickTimeSeriesY.RemoveAt(0);
-        while (RightStickTimeSeriesX.Count > 0 && RightStickTimeSeriesX[0].TimestampMs < trimThreshold)
-            RightStickTimeSeriesX.RemoveAt(0);
-        while (RightStickTimeSeriesY.Count > 0 && RightStickTimeSeriesY[0].TimestampMs < trimThreshold)
-            RightStickTimeSeriesY.RemoveAt(0);
+        TrimCollection(LeftStickTrackPoints, trimThreshold, p => p.TimestampMs);
+        TrimCollection(RightStickTrackPoints, trimThreshold, p => p.TimestampMs);
+        TrimCollection(LeftStickTimeSeriesX, trimThreshold, p => p.TimestampMs);
+        TrimCollection(LeftStickTimeSeriesY, trimThreshold, p => p.TimestampMs);
+        TrimCollection(RightStickTimeSeriesX, trimThreshold, p => p.TimestampMs);
+        TrimCollection(RightStickTimeSeriesY, trimThreshold, p => p.TimestampMs);
+    }
+
+    private static void TrimCollection<T>(ObservableCollection<T> collection, double threshold, Func<T, double> getTime)
+    {
+        int removeCount = 0;
+        while (removeCount < collection.Count && getTime(collection[removeCount]) < threshold)
+            removeCount++;
+
+        if (removeCount > MaxDisplayPoints / 2)
+        {
+            for (int i = 0; i < removeCount; i++)
+                collection.RemoveAt(0);
+        }
+        else if (collection.Count > MaxDisplayPoints)
+        {
+            int excess = collection.Count - MaxDisplayPoints;
+            for (int i = 0; i < excess; i++)
+                collection.RemoveAt(0);
+        }
     }
 }
 

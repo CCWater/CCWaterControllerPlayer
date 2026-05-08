@@ -163,7 +163,13 @@ public partial class RecordsViewModel : ViewModelBase
     {
         if (value == null) return;
         StopPlaybackInternal();
-        DisplayFullRecord(value);
+        _ = LoadAndDisplayRecordAsync(value);
+    }
+
+    private async Task LoadAndDisplayRecordAsync(TrackRecord record)
+    {
+        await _databaseService.LoadSnapshotsAsync(record);
+        DisplayFullRecord(record);
     }
 
     private void DisplayFullRecord(TrackRecord record)
@@ -348,8 +354,9 @@ public partial class RecordsViewModel : ViewModelBase
         return Math.Min(hi, _snapshotTimesMs.Count - 1);
     }
 
-    private void LoadCompareRecord(TrackRecord record)
+    private async void LoadCompareRecord(TrackRecord record)
     {
+        await _databaseService.LoadSnapshotsAsync(record);
         _compareSnapshots = record.Snapshots;
         _compareTimesMs.Clear();
 
@@ -563,9 +570,10 @@ public partial class RecordsViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private void SendToOverlay(TrackRecord? record)
+    private async Task SendToOverlayAsync(TrackRecord? record)
     {
         if (record == null) return;
+        await _databaseService.LoadSnapshotsAsync(record);
         OnSendToOverlay?.Invoke(record);
     }
 
