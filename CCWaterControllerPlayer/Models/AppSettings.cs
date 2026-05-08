@@ -6,7 +6,7 @@ public class RecordingTriggerConfig
     public GamepadButton TriggerButton { get; set; } = GamepadButton.RightTrigger;
     public GamepadButton[]? ComboButtons { get; set; }
     public float TriggerThreshold { get; set; } = 0.1f;
-    public int PreTriggerMs { get; set; } = 5000;
+    public int PreTriggerMs { get; set; } = 500;
     public int PostTriggerMs { get; set; } = 500;
     public bool MergeEnabled { get; set; } = true;
     public int MergeWindowMs { get; set; } = 500;
