@@ -121,6 +121,29 @@ public partial class MainViewModel : ViewModelBase
         }
 
         StartAutoDetect();
+
+        if (!_settingsService.Settings.HasConfiguredTrigger)
+        {
+            ShowFirstRunGuide();
+        }
+    }
+
+    private void ShowFirstRunGuide()
+    {
+        var lang = LocalizationService.Instance.Strings;
+        var result = System.Windows.MessageBox.Show(
+            lang.FirstRunMessage,
+            lang.FirstRunTitle,
+            System.Windows.MessageBoxButton.YesNo,
+            System.Windows.MessageBoxImage.Information);
+
+        if (result == System.Windows.MessageBoxResult.Yes)
+        {
+            CurrentView = SettingsView;
+        }
+
+        _settingsService.Settings.HasConfiguredTrigger = true;
+        _ = _settingsService.SaveAsync();
     }
 
     public void RestoreMainWindowState(System.Windows.Window window)

@@ -84,7 +84,7 @@
                                             <Button FontSize="11" Background="Transparent"
                                                     BorderThickness="0" Padding="4,2" Cursor="Hand"
                                                     Command="{Binding DataContext.ToggleRecordStatusCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                                    CommandParameter="{Binding}" ToolTip="Toggle Status">
+                                                    CommandParameter="{Binding}" ToolTip="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.TipToggleStatus}">
                                                 <Button.Style>
                                                     <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
                                                         <Setter Property="Content" Value="&#x23F3;"/>
@@ -102,22 +102,22 @@
                                                     Foreground="#FF4ECB71" Background="Transparent"
                                                     BorderThickness="0" Padding="4,2" Cursor="Hand"
                                                     Command="{Binding DataContext.SendToOverlayCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                                    CommandParameter="{Binding}" ToolTip="Send to Overlay"/>
+                                                    CommandParameter="{Binding}" ToolTip="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.TipSendToOverlay}"/>
                                             <Button Content="+" FontSize="14" FontWeight="Bold"
                                                     Foreground="{StaticResource SecondaryBrush}" Background="Transparent"
                                                     BorderThickness="0" Padding="4,2" Cursor="Hand"
                                                     Command="{Binding DataContext.ToggleRecordForCompareCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                                    CommandParameter="{Binding}" ToolTip="Compare"/>
+                                                    CommandParameter="{Binding}" ToolTip="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.TipCompare}"/>
                                             <Button Content="&#x270F;" FontSize="12"
                                                     Foreground="{StaticResource TextSecondaryBrush}" Background="Transparent"
                                                     BorderThickness="0" Padding="4,2" Cursor="Hand"
                                                     Command="{Binding DataContext.StartRenameCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                                    CommandParameter="{Binding}" ToolTip="Rename"/>
+                                                    CommandParameter="{Binding}" ToolTip="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.TipRename}"/>
                                             <Button Content="&#x1F5D1;" FontSize="12"
                                                     Foreground="#FFFF6B6B" Background="Transparent"
                                                     BorderThickness="0" Padding="4,2" Cursor="Hand"
                                                     Command="{Binding DataContext.DeleteRecordCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                                    CommandParameter="{Binding}" ToolTip="Delete"/>
+                                                    CommandParameter="{Binding}" ToolTip="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.TipDelete}"/>
                                         </StackPanel>
                                     </Grid>
                                 </Border>

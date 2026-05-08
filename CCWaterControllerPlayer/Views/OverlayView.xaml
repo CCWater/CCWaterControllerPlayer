@@ -284,8 +284,14 @@
                         <TextBlock Grid.Column="1" Text="{Binding ImageOverlayPath}" 
                                    Foreground="{StaticResource TextMutedBrush}" FontSize="11"
                                    VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,0,8,0"/>
-                        <Button Grid.Column="2" Content="..." Style="{StaticResource NavButtonStyle}" 
-                                Padding="12,6" Command="{Binding BrowseImageCommand}"/>
+                        <Button Grid.Column="2" Style="{StaticResource PrimaryButtonStyle}" 
+                                Padding="12,6" Command="{Binding BrowseImageCommand}"
+                                ToolTip="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.TipSelectImage}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📂" FontSize="12" Margin="0,0,4,0"/>
+                                <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.TipSelectImage}" FontSize="11"/>
+                            </StackPanel>
+                        </Button>
                     </Grid>
 
                     <Button Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.BtnSave}" 

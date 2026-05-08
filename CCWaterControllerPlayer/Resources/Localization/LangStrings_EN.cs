@@ -90,4 +90,16 @@ public class LangStrings_EN : LangStrings
 
     public override string Rate => "Rate";
     public override string Rec => "Rec";
+
+    public override string TipToggleStatus => "Toggle Status";
+    public override string TipSendToOverlay => "Send to Overlay";
+    public override string TipCompare => "Compare";
+    public override string TipRename => "Rename";
+    public override string TipDelete => "Delete";
+    public override string TipSelectImage => "Select Image File";
+
+    public override string FirstRunTitle => "Welcome";
+    public override string FirstRunMessage => "No fire button (recording trigger) has been configured yet. Would you like to go to Settings now?";
+    public override string FirstRunGoSettings => "Go to Settings";
+    public override string FirstRunSkip => "Later";
 }

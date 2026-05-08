@@ -34,10 +34,14 @@
             </Grid>
 
             <Grid Grid.Row="1" Margin="4" AllowDrop="True" 
-                  Drop="OnImageDrop" DragOver="OnDragOver">
-                <TextBlock x:Name="PlaceholderText" Text="Drop image here"
-                           Foreground="#40FFFFFF" FontSize="11"
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                  Drop="OnImageDrop" DragOver="OnDragOver"
+                  MouseLeftButtonDown="OnPlaceholderClick" Cursor="Hand">
+                <StackPanel x:Name="PlaceholderText"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="📂" FontSize="24" HorizontalAlignment="Center" Foreground="#60FFFFFF"/>
+                    <TextBlock Text="Drop or click to select image" 
+                               Foreground="#40FFFFFF" FontSize="11" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                </StackPanel>
                 <Image x:Name="OverlayImage" Stretch="Uniform" 
                        RenderOptions.BitmapScalingMode="HighQuality"/>
             </Grid>

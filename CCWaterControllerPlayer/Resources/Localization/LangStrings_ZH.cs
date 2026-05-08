@@ -90,4 +90,16 @@ public class LangStrings_ZH : LangStrings
 
     public override string Rate => "采样率";
     public override string Rec => "录制";
+
+    public override string TipToggleStatus => "切换状态";
+    public override string TipSendToOverlay => "发送到悬浮窗";
+    public override string TipCompare => "对比";
+    public override string TipRename => "重命名";
+    public override string TipDelete => "删除";
+    public override string TipSelectImage => "选择图片文件";
+
+    public override string FirstRunTitle => "欢迎使用";
+    public override string FirstRunMessage => "检测到您尚未配置开火键（录制触发按键），是否现在前往设置？";
+    public override string FirstRunGoSettings => "前往设置";
+    public override string FirstRunSkip => "稍后再说";
 }

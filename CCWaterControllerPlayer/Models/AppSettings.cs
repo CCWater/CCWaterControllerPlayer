@@ -6,10 +6,10 @@ public class RecordingTriggerConfig
     public GamepadButton TriggerButton { get; set; } = GamepadButton.RightTrigger;
     public GamepadButton[]? ComboButtons { get; set; }
     public float TriggerThreshold { get; set; } = 0.1f;
-    public int PreTriggerMs { get; set; } = 1000;
-    public int PostTriggerMs { get; set; } = 2000;
+    public int PreTriggerMs { get; set; } = 5000;
+    public int PostTriggerMs { get; set; } = 500;
     public bool MergeEnabled { get; set; } = true;
-    public int MergeWindowMs { get; set; } = 2000;
+    public int MergeWindowMs { get; set; } = 500;
 }
 
 public enum TriggerMode
@@ -96,4 +96,5 @@ public class AppSettings
     public int RingBufferSeconds { get; set; } = 5;
     public string Language { get; set; } = string.Empty;
     public WindowState MainWindowState { get; set; } = new();
+    public bool HasConfiguredTrigger { get; set; }
 }

@@ -90,4 +90,16 @@ public abstract class LangStrings
 
     public abstract string Rate { get; }
     public abstract string Rec { get; }
+
+    public abstract string TipToggleStatus { get; }
+    public abstract string TipSendToOverlay { get; }
+    public abstract string TipCompare { get; }
+    public abstract string TipRename { get; }
+    public abstract string TipDelete { get; }
+    public abstract string TipSelectImage { get; }
+
+    public abstract string FirstRunTitle { get; }
+    public abstract string FirstRunMessage { get; }
+    public abstract string FirstRunGoSettings { get; }
+    public abstract string FirstRunSkip { get; }
 }

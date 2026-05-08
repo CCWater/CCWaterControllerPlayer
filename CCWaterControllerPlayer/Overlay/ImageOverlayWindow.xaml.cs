@@ -154,6 +154,20 @@ public partial class ImageOverlayWindow : Window
         }
     }
 
+    private void OnPlaceholderClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (_isPinned) return;
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp;*.gif;*.webp;*.tiff|All Files|*.*"
+        };
+        if (dialog.ShowDialog() == true && IsImageFile(dialog.FileName))
+        {
+            LoadImage(dialog.FileName);
+            OnImageChanged?.Invoke(dialog.FileName);
+        }
+    }
+
     public Action<string>? OnImageChanged { get; set; }
 
     private static bool IsImageFile(string path)
