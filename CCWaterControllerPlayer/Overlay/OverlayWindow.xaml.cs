@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Threading;
 using CCWaterControllerPlayer.Models;
 using CCWaterControllerPlayer.ViewModels;
 using CCWaterControllerPlayer.Views;
@@ -28,6 +29,7 @@ public partial class OverlayWindow : Window
     private readonly ObservableCollection<TrackPoint> _rightRealtimePoints = new();
     private readonly ObservableCollection<List<TrackPoint>> _leftHistoryTracks = new();
     private readonly ObservableCollection<List<TrackPoint>> _rightHistoryTracks = new();
+    private readonly DispatcherTimer _clockTimer;
 
     public bool IsPinned => _isPinned;
     public Action? OnPinStateChanged { get; set; }
@@ -39,6 +41,11 @@ public partial class OverlayWindow : Window
         LeftStickVis.HistoryTracks = _leftHistoryTracks;
         RightStickVis.TrackPoints = _rightRealtimePoints;
         RightStickVis.HistoryTracks = _rightHistoryTracks;
+
+        _clockTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _clockTimer.Tick += (_, _) => ClockText.Text = DateTime.Now.ToString("HH:mm:ss");
+        _clockTimer.Start();
+        ClockText.Text = DateTime.Now.ToString("HH:mm:ss");
     }
 
     public void Configure(OverlayConfig config)
