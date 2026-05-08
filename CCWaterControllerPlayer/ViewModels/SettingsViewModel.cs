@@ -20,6 +20,8 @@ public class TriggerButtonOption
 public partial class SettingsViewModel : ViewModelBase
 {
     private readonly SettingsService _settingsService;
+    private CancellationTokenSource? _saveDebounceCts;
+    private bool _isLoading;
     public Action? OnSettingsSaved;
 
     public List<TriggerButtonOption> AvailableTriggerButtons { get; } = new()
@@ -82,10 +84,40 @@ public partial class SettingsViewModel : ViewModelBase
     {
         _settingsService = settingsService;
         LoadFromSettings();
+        PropertyChanged += OnPropertyAutoSave;
+    }
+
+    private void OnPropertyAutoSave(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (_isLoading) return;
+        if (e.PropertyName is nameof(SelectedTriggerButton) or nameof(SamplingRateHz) or nameof(AutoDetectSamplingRate)
+            or nameof(PreTriggerMs) or nameof(PostTriggerMs) or nameof(MergeEnabled) or nameof(MergeWindowMs)
+            or nameof(TriggerThreshold) or nameof(TriggerMode) or nameof(DefaultTrackedStick))
+        {
+            ScheduleAutoSave();
+        }
+    }
+
+    private void ScheduleAutoSave()
+    {
+        _saveDebounceCts?.Cancel();
+        _saveDebounceCts = new CancellationTokenSource();
+        var token = _saveDebounceCts.Token;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(800, token);
+                if (!token.IsCancellationRequested)
+                    await SaveSettingsAsync();
+            }
+            catch (OperationCanceledException) { }
+        }, token);
     }
 
     private void LoadFromSettings()
     {
+        _isLoading = true;
         var s = _settingsService.Settings;
         SamplingRateHz = s.SamplingRateHz;
         AutoDetectSamplingRate = s.AutoDetectSamplingRate;
@@ -100,6 +132,7 @@ public partial class SettingsViewModel : ViewModelBase
         SelectedLanguage = LocalizationService.Instance.CurrentLanguage;
         SelectedTriggerButton = AvailableTriggerButtons.FirstOrDefault(b => b.Value == TriggerButton)
                                 ?? AvailableTriggerButtons[0];
+        _isLoading = false;
     }
 
     [RelayCommand]

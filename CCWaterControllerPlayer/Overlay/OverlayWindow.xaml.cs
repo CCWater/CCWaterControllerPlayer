@@ -33,6 +33,7 @@ public partial class OverlayWindow : Window
 
     public bool IsPinned => _isPinned;
     public Action? OnPinStateChanged { get; set; }
+    public Action? OnPositionChanged { get; set; }
 
     public OverlayWindow()
     {
@@ -46,6 +47,15 @@ public partial class OverlayWindow : Window
         _clockTimer.Tick += (_, _) => ClockText.Text = DateTime.Now.ToString("HH:mm:ss");
         _clockTimer.Start();
         ClockText.Text = DateTime.Now.ToString("HH:mm:ss");
+
+        LocationChanged += (_, _) => NotifyPositionChanged();
+        SizeChanged += (_, _) => NotifyPositionChanged();
+    }
+
+    private void NotifyPositionChanged()
+    {
+        if (!_isPinned && IsLoaded)
+            OnPositionChanged?.Invoke();
     }
 
     public void Configure(OverlayConfig config)

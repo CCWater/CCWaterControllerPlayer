@@ -23,10 +23,19 @@ public partial class ImageOverlayWindow : Window
     private bool _isPinned;
 
     public bool IsPinned => _isPinned;
+    public Action? OnPositionChanged { get; set; }
 
     public ImageOverlayWindow()
     {
         InitializeComponent();
+        LocationChanged += (_, _) => NotifyPositionChanged();
+        SizeChanged += (_, _) => NotifyPositionChanged();
+    }
+
+    private void NotifyPositionChanged()
+    {
+        if (!_isPinned && IsLoaded)
+            OnPositionChanged?.Invoke();
     }
 
     public void Configure(ImageOverlayConfig config)

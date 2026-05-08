@@ -22,6 +22,7 @@ public partial class MainViewModel : ViewModelBase
     private static readonly long UiUpdateIntervalTicks = Stopwatch.Frequency / 60;
     private CancellationTokenSource? _autoDetectCts;
     private bool _isAutoDetecting;
+    private CancellationTokenSource? _saveDebounceCts;
 
     [ObservableProperty]
     private ViewModelBase? _currentView;
@@ -187,6 +188,7 @@ public partial class MainViewModel : ViewModelBase
         if (_overlayWindow == null)
         {
             _overlayWindow = new OverlayWindow();
+            _overlayWindow.OnPositionChanged = () => SyncOverlayPositionToSettings();
         }
 
         var config = _settingsService.Settings.OverlayConfig;
@@ -195,6 +197,17 @@ public partial class MainViewModel : ViewModelBase
 
         IsOverlayVisible = true;
         StatusMessage = "Overlay shown";
+    }
+
+    private void SyncOverlayPositionToSettings()
+    {
+        if (_overlayWindow == null) return;
+        var config = _settingsService.Settings.OverlayConfig;
+        config.PositionX = (int)_overlayWindow.Left;
+        config.PositionY = (int)_overlayWindow.Top;
+        config.Width = (int)_overlayWindow.Width;
+        config.Height = (int)_overlayWindow.Height;
+        ScheduleSave();
     }
 
     private void HideOverlay()
@@ -322,14 +335,26 @@ public partial class MainViewModel : ViewModelBase
             _imageOverlayWindow.OnImageChanged = (path) =>
             {
                 _settingsService.Settings.ImageOverlayConfig.ImagePath = path;
-                _ = _settingsService.SaveAsync();
+                ScheduleSave();
             };
+            _imageOverlayWindow.OnPositionChanged = () => SyncImageOverlayPositionToSettings();
         }
 
         var config = _settingsService.Settings.ImageOverlayConfig;
         _imageOverlayWindow.Configure(config);
         _imageOverlayWindow.Show();
         IsImageOverlayVisible = true;
+    }
+
+    private void SyncImageOverlayPositionToSettings()
+    {
+        if (_imageOverlayWindow == null) return;
+        var config = _settingsService.Settings.ImageOverlayConfig;
+        config.PositionX = (int)_imageOverlayWindow.Left;
+        config.PositionY = (int)_imageOverlayWindow.Top;
+        config.Width = (int)_imageOverlayWindow.Width;
+        config.Height = (int)_imageOverlayWindow.Height;
+        ScheduleSave();
     }
 
     private void HideImageOverlay()
@@ -359,7 +384,24 @@ public partial class MainViewModel : ViewModelBase
         if (_imageOverlayWindow == null) ShowImageOverlay();
         _imageOverlayWindow!.LoadImage(path);
         _settingsService.Settings.ImageOverlayConfig.ImagePath = path;
-        _ = _settingsService.SaveAsync();
+        ScheduleSave();
+    }
+
+    private void ScheduleSave()
+    {
+        _saveDebounceCts?.Cancel();
+        _saveDebounceCts = new CancellationTokenSource();
+        var token = _saveDebounceCts.Token;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(500, token);
+                if (!token.IsCancellationRequested)
+                    await _settingsService.SaveAsync();
+            }
+            catch (OperationCanceledException) { }
+        }, token);
     }
 
     private void ApplySettings()

@@ -9,6 +9,8 @@ namespace CCWaterControllerPlayer.ViewModels;
 public partial class OverlayViewModel : ViewModelBase
 {
     private readonly SettingsService _settingsService;
+    private CancellationTokenSource? _saveDebounceCts;
+    private bool _isLoading;
 
     public Action? OnToggleOverlay;
     public Action? OnPinOverlay;
@@ -63,6 +65,35 @@ public partial class OverlayViewModel : ViewModelBase
     {
         _settingsService = settingsService;
         LoadFromSettings();
+        PropertyChanged += OnPropertyAutoSave;
+    }
+
+    private void OnPropertyAutoSave(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (_isLoading) return;
+        if (e.PropertyName is nameof(OverlayWidth) or nameof(OverlayHeight) or nameof(OverlayOpacity)
+            or nameof(OverlayShowRealtime) or nameof(OverlayShowHistory) or nameof(OverlayShowRecoilAnalysis)
+            or nameof(ImageOverlayOpacity) or nameof(ImageOverlayPath))
+        {
+            ScheduleAutoSave();
+        }
+    }
+
+    private void ScheduleAutoSave()
+    {
+        _saveDebounceCts?.Cancel();
+        _saveDebounceCts = new CancellationTokenSource();
+        var token = _saveDebounceCts.Token;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(500, token);
+                if (!token.IsCancellationRequested)
+                    await SaveOverlaySettingsAsync();
+            }
+            catch (OperationCanceledException) { }
+        }, token);
     }
 
     public void RefreshState()
@@ -71,10 +102,12 @@ public partial class OverlayViewModel : ViewModelBase
         IsOverlayPinned = GetIsOverlayPinned?.Invoke() ?? false;
         IsImageOverlayVisible = GetIsImageOverlayVisible?.Invoke() ?? false;
         IsImageOverlayPinned = GetIsImageOverlayPinned?.Invoke() ?? false;
+        LoadFromSettings();
     }
 
     private void LoadFromSettings()
     {
+        _isLoading = true;
         var config = _settingsService.Settings.OverlayConfig;
         OverlayWidth = config.Width;
         OverlayHeight = config.Height;
@@ -86,6 +119,7 @@ public partial class OverlayViewModel : ViewModelBase
         var imgConfig = _settingsService.Settings.ImageOverlayConfig;
         ImageOverlayOpacity = imgConfig.Opacity;
         ImageOverlayPath = imgConfig.ImagePath;
+        _isLoading = false;
     }
 
     [RelayCommand]
