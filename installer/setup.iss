@@ -51,3 +51,31 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+
+[Code]
+var
+  RemoveDataCheckbox: TNewCheckBox;
+
+procedure InitializeUninstallProgressForm();
+begin
+  RemoveDataCheckbox := TNewCheckBox.Create(UninstallProgressForm);
+  RemoveDataCheckbox.Parent := UninstallProgressForm;
+  RemoveDataCheckbox.Left := ScaleX(20);
+  RemoveDataCheckbox.Top := UninstallProgressForm.StatusLabel.Top + UninstallProgressForm.StatusLabel.Height + ScaleY(16);
+  RemoveDataCheckbox.Width := UninstallProgressForm.ClientWidth - ScaleX(40);
+  RemoveDataCheckbox.Height := ScaleY(20);
+  RemoveDataCheckbox.Caption := 'Delete all user data (settings, recordings, database)';
+  RemoveDataCheckbox.Checked := False;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  DataDir: String;
+begin
+  if (CurUninstallStep = usPostUninstall) and RemoveDataCheckbox.Checked then
+  begin
+    DataDir := ExpandConstant('{localappdata}\CCWaterControllerPlayer');
+    if DirExists(DataDir) then
+      DelTree(DataDir, True, True, True);
+  end;
+end;
