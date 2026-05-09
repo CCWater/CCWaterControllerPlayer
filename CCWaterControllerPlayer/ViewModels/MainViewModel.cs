@@ -342,6 +342,11 @@ public partial class MainViewModel : ViewModelBase
                 _settingsService.Settings.ImageOverlayConfig.ImagePath = path;
                 ScheduleSave();
             };
+            _imageOverlayWindow.OnImageIndexChanged = (index) =>
+            {
+                _settingsService.Settings.ImageOverlayConfig.CurrentImageIndex = index;
+                ScheduleSave();
+            };
             _imageOverlayWindow.OnPositionChanged = () => SyncImageOverlayPositionToSettings();
         }
 

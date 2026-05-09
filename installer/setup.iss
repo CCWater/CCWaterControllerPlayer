@@ -43,6 +43,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "{#PublishDir}\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PublishDir}\*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#PublishDir}\*.pdb"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#PublishDir}\Resources\Images\*.jpg"; DestDir: "{app}\Resources\Images"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

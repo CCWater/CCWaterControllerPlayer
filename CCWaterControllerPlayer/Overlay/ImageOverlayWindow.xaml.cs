@@ -21,15 +21,46 @@ public partial class ImageOverlayWindow : Window
 
     private bool _isClickThrough;
     private bool _isPinned;
+    private List<string> _imageList = new();
+    private int _currentIndex;
 
     public bool IsPinned => _isPinned;
+    public int CurrentImageIndex => _currentIndex;
     public Action? OnPositionChanged { get; set; }
+    public Action<string>? OnImageChanged { get; set; }
+    public Action<int>? OnImageIndexChanged { get; set; }
 
     public ImageOverlayWindow()
     {
         InitializeComponent();
         LocationChanged += (_, _) => NotifyPositionChanged();
         SizeChanged += (_, _) => NotifyPositionChanged();
+        BuildImageList(string.Empty);
+    }
+
+    private void BuildImageList(string? userImagePath)
+    {
+        _imageList.Clear();
+
+        var appDir = AppDomain.CurrentDomain.BaseDirectory;
+        var defaultImages = new[]
+        {
+            Path.Combine(appDir, "Resources", "Images", "light_ammo.jpg"),
+            Path.Combine(appDir, "Resources", "Images", "heavy_ammo.jpg"),
+            Path.Combine(appDir, "Resources", "Images", "energy_ammo.jpg"),
+        };
+
+        foreach (var img in defaultImages)
+        {
+            if (File.Exists(img))
+                _imageList.Add(img);
+        }
+
+        if (!string.IsNullOrEmpty(userImagePath) && File.Exists(userImagePath)
+            && !_imageList.Contains(userImagePath))
+        {
+            _imageList.Add(userImagePath);
+        }
     }
 
     private void NotifyPositionChanged()
@@ -46,7 +77,18 @@ public partial class ImageOverlayWindow : Window
         Top = config.PositionY;
         Opacity = config.Opacity;
 
-        if (!string.IsNullOrEmpty(config.ImagePath) && File.Exists(config.ImagePath))
+        BuildImageList(config.ImagePath);
+
+        int idx = config.CurrentImageIndex;
+        if (idx < 0 || idx >= _imageList.Count)
+            idx = 0;
+
+        if (_imageList.Count > 0)
+        {
+            _currentIndex = idx;
+            LoadImage(_imageList[_currentIndex]);
+        }
+        else if (!string.IsNullOrEmpty(config.ImagePath) && File.Exists(config.ImagePath))
         {
             LoadImage(config.ImagePath);
         }
@@ -76,10 +118,28 @@ public partial class ImageOverlayWindow : Window
         }
     }
 
+    private void PrevImage_Click(object sender, RoutedEventArgs e)
+    {
+        if (_imageList.Count == 0) return;
+        _currentIndex = (_currentIndex - 1 + _imageList.Count) % _imageList.Count;
+        LoadImage(_imageList[_currentIndex]);
+        OnImageIndexChanged?.Invoke(_currentIndex);
+    }
+
+    private void NextImage_Click(object sender, RoutedEventArgs e)
+    {
+        if (_imageList.Count == 0) return;
+        _currentIndex = (_currentIndex + 1) % _imageList.Count;
+        LoadImage(_imageList[_currentIndex]);
+        OnImageIndexChanged?.Invoke(_currentIndex);
+    }
+
     public void Pin()
     {
         _isPinned = true;
         TitleBar.Visibility = Visibility.Collapsed;
+        BtnPrev.Visibility = Visibility.Collapsed;
+        BtnNext.Visibility = Visibility.Collapsed;
         SetClickThrough(true);
     }
 
@@ -88,6 +148,8 @@ public partial class ImageOverlayWindow : Window
         _isPinned = false;
         SetClickThrough(false);
         TitleBar.Visibility = Visibility.Visible;
+        BtnPrev.Visibility = Visibility.Visible;
+        BtnNext.Visibility = Visibility.Visible;
     }
 
     private void SetClickThrough(bool enabled)
@@ -116,6 +178,7 @@ public partial class ImageOverlayWindow : Window
             config.Width = (int)Width;
             config.Height = (int)Height;
         }
+        config.CurrentImageIndex = _currentIndex;
     }
 
     private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -158,12 +221,16 @@ public partial class ImageOverlayWindow : Window
         var file = files[0];
         if (IsImageFile(file))
         {
+            if (!_imageList.Contains(file))
+                _imageList.Add(file);
+            _currentIndex = _imageList.IndexOf(file);
             LoadImage(file);
             OnImageChanged?.Invoke(file);
+            OnImageIndexChanged?.Invoke(_currentIndex);
         }
     }
 
-    private void OnPlaceholderClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private void OnPlaceholderClick(object sender, MouseButtonEventArgs e)
     {
         if (_isPinned) return;
         var dialog = new Microsoft.Win32.OpenFileDialog
@@ -172,12 +239,14 @@ public partial class ImageOverlayWindow : Window
         };
         if (dialog.ShowDialog() == true && IsImageFile(dialog.FileName))
         {
+            if (!_imageList.Contains(dialog.FileName))
+                _imageList.Add(dialog.FileName);
+            _currentIndex = _imageList.IndexOf(dialog.FileName);
             LoadImage(dialog.FileName);
             OnImageChanged?.Invoke(dialog.FileName);
+            OnImageIndexChanged?.Invoke(_currentIndex);
         }
     }
-
-    public Action<string>? OnImageChanged { get; set; }
 
     private static bool IsImageFile(string path)
     {

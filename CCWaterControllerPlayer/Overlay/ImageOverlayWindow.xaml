@@ -44,6 +44,17 @@
                 </StackPanel>
                 <Image x:Name="OverlayImage" Stretch="Uniform" 
                        RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                <Button x:Name="BtnPrev" Content="◀" Click="PrevImage_Click"
+                        HorizontalAlignment="Left" VerticalAlignment="Center"
+                        Background="#80000000" Foreground="White" BorderThickness="0"
+                        FontSize="14" Padding="6,8" Cursor="Hand" Margin="4,0,0,0"
+                        Opacity="0.7"/>
+                <Button x:Name="BtnNext" Content="▶" Click="NextImage_Click"
+                        HorizontalAlignment="Right" VerticalAlignment="Center"
+                        Background="#80000000" Foreground="White" BorderThickness="0"
+                        FontSize="14" Padding="6,8" Cursor="Hand" Margin="0,0,4,0"
+                        Opacity="0.7"/>
             </Grid>
         </Grid>
     </Border>

@@ -68,6 +68,7 @@ public class ImageOverlayConfig
     public int PositionY { get; set; } = 50;
     public float Opacity { get; set; } = 0.9f;
     public string ImagePath { get; set; } = string.Empty;
+    public int CurrentImageIndex { get; set; }
 }
 
 public class WindowState
