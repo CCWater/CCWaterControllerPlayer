@@ -55,25 +55,24 @@ Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChang
 
 [Code]
 var
-  RemoveDataCheckbox: TNewCheckBox;
+  ShouldRemoveData: Boolean;
 
-procedure InitializeUninstallProgressForm();
+function InitializeUninstall(): Boolean;
 begin
-  RemoveDataCheckbox := TNewCheckBox.Create(UninstallProgressForm);
-  RemoveDataCheckbox.Parent := UninstallProgressForm;
-  RemoveDataCheckbox.Left := ScaleX(20);
-  RemoveDataCheckbox.Top := UninstallProgressForm.StatusLabel.Top + UninstallProgressForm.StatusLabel.Height + ScaleY(16);
-  RemoveDataCheckbox.Width := UninstallProgressForm.ClientWidth - ScaleX(40);
-  RemoveDataCheckbox.Height := ScaleY(20);
-  RemoveDataCheckbox.Caption := 'Delete all user data (settings, recordings, database)';
-  RemoveDataCheckbox.Checked := False;
+  Result := True;
+  ShouldRemoveData := False;
+  if MsgBox('Do you want to delete all user data (settings, recordings, database)?',
+            mbConfirmation, MB_YESNO) = IDYES then
+  begin
+    ShouldRemoveData := True;
+  end;
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   DataDir: String;
 begin
-  if (CurUninstallStep = usPostUninstall) and RemoveDataCheckbox.Checked then
+  if (CurUninstallStep = usPostUninstall) and ShouldRemoveData then
   begin
     DataDir := ExpandConstant('{localappdata}\CCWaterControllerPlayer');
     if DirExists(DataDir) then
