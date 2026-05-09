@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 permissions:
   contents: write
@@ -11,17 +11,22 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-    
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: "8.0.x"
 
       - name: Publish
         run: dotnet publish CCWaterControllerPlayer/CCWaterControllerPlayer.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
+
+      - name: Update version in setup.iss
+        run: |
+          $version = "${{ github.ref_name }}".TrimStart('v')
+          (Get-Content installer/setup.iss) -replace '#define MyAppVersion ".*"', "#define MyAppVersion `"$version`"" | Set-Content installer/setup.iss
 
       - name: Install Inno Setup
         run: choco install innosetup -y --no-progress
@@ -36,10 +41,10 @@ jobs:
           name: CCWater Controller Player ${{ github.ref_name }}
           body: |
             ## CCWater Controller Player ${{ github.ref_name }}
-            
+
             ### 安装说明
             下载 `CCWaterControllerPlayer-Setup-v*.exe` 运行安装即可。
-            
+
             ### 系统要求
             - Windows 7 SP1 / Windows 10 / Windows 11 (x64)
             - 无需额外安装 .NET 运行时
