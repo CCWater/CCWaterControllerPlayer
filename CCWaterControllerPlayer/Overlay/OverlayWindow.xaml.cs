@@ -89,6 +89,8 @@ public partial class OverlayWindow : Window
     public void Pin()
     {
         _isPinned = true;
+        PinButton.Visibility = Visibility.Collapsed;
+        CloseButton.Visibility = Visibility.Collapsed;
         SetClickThrough(true);
         OnPinStateChanged?.Invoke();
     }
@@ -96,6 +98,8 @@ public partial class OverlayWindow : Window
     public void Unpin()
     {
         _isPinned = false;
+        PinButton.Visibility = Visibility.Visible;
+        CloseButton.Visibility = Visibility.Visible;
         SetClickThrough(false);
         OnPinStateChanged?.Invoke();
     }
