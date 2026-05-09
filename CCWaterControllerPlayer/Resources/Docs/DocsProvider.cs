@@ -42,9 +42,9 @@ public static class DocsProvider
 - Set your game and weapon in Settings before recording
 - Configure the trigger button (default: Right Trigger / R2)
 - When you press the trigger in-game, the app automatically records:
-  - 1 second BEFORE the trigger press (pre-buffer)
+  - 500ms BEFORE the trigger press (pre-buffer)
   - The entire duration while trigger is held
-  - 2 seconds AFTER trigger release (post-buffer)
+  - 500ms AFTER trigger release (post-buffer)
 - Recordings are automatically saved to the local database
 
 ### 4. Compare Tracks
@@ -77,9 +77,9 @@ public static class DocsProvider
 - 录制前在设置中配置游戏名称和武器名称
 - 配置触发按键（默认：右扳机 RT / R2）
 - 在游戏中按下扳机时，程序自动录制：
-  - 按下前1秒的数据（预缓冲）
+  - 按下前500ms的数据（预缓冲）
   - 按住期间的全部数据
-  - 松开后2秒的数据（后缓冲）
+  - 松开后500ms的数据（后缓冲）
 - 录制结果自动保存到本地数据库
 
 ### 4. 对比轨迹
@@ -110,7 +110,7 @@ public static class DocsProvider
 ### Input Monitoring
 - **Dual stick tracking**: Both left and right sticks monitored simultaneously
 - **Full state capture**: Sticks, triggers, and all buttons recorded
-- **High frequency**: Up to 1000Hz sampling (depends on controller hardware)
+- **Three performance levels**: Low (50Hz), Medium (1000Hz), High (8000Hz) - balance precision vs CPU usage
 - **Auto-detect rate**: Measures actual polling rate of your controller
 
 ### Recording System
@@ -133,6 +133,13 @@ public static class DocsProvider
 - **History overlay**: Overlays selected historical tracks for reference
 - **Draggable & resizable**: Position and size the overlay as needed
 
+### Image Overlay
+- **Built-in recoil images**: Default ammo-type recoil pattern reference images
+- **Left/Right navigation**: Browse through images with arrow buttons
+- **Custom images**: Drag-and-drop or select your own reference images
+- **Pin mode**: Pin to make click-through, navigation buttons hidden when pinned
+- **State persistence**: Remembers selected image and visibility across sessions
+
 ### Data Management
 - **Local SQLite storage**: All data stored locally, no server needed
 - **Game/Weapon categorization**: Filter and organize by game and weapon
@@ -152,7 +159,7 @@ public static class DocsProvider
 ### 输入监控
 - **双摇杆追踪**：左右摇杆同时监控
 - **完整状态捕获**：摇杆、扳机和所有按键均被记录
-- **高频采样**：最高1000Hz采样（取决于手柄硬件）
+- **三档采样性能**：低(50Hz)/中(1000Hz)/高(8000Hz)，按需平衡精度与CPU占用
 - **自动检测采样率**：测量手柄的实际轮询频率
 
 ### 录制系统
@@ -174,6 +181,13 @@ public static class DocsProvider
 - **实时显示**：显示当前摇杆移动
 - **历史叠加**：叠加选定的历史轨迹作为参考
 - **可拖拽调整**：自由调整位置和大小
+
+### 图片悬浮窗
+- **内置后坐力图**：默认包含弹药类型后坐力参考图
+- **左右切换**：通过箭头按钮浏览图片
+- **自选图片**：拖拽或点击选择自定义参考图片
+- **固定模式**：固定后点击穿透，导航按钮隐藏
+- **状态记忆**：记住选择的图片和显示状态，下次启动自动恢复
 
 ### 数据管理
 - **本地SQLite存储**：所有数据本地存储，无需服务器
@@ -218,7 +232,7 @@ When a trigger event is detected, the system:
 ### Merge Behavior
 
 When ""Merge consecutive triggers"" is enabled:
-- If a new trigger occurs within the merge window (default: 2000ms) after the previous trigger ends
+- If a new trigger occurs within the merge window (default: 500ms) after the previous trigger ends
 - The two recordings are merged into a single continuous recording
 - This is useful for burst-fire weapons or tap-firing patterns
 
@@ -227,9 +241,10 @@ When disabled:
 - Post-trigger of the first and pre-trigger of the second may overlap in time
 
 ### Timing Parameters
-- **Pre-trigger (ms)**: How much data before the trigger to include (default: 1000ms)
-- **Post-trigger (ms)**: How long to continue recording after release (default: 2000ms)
-- **Merge window (ms)**: Time window for merging consecutive triggers (default: 2000ms)
+- **Pre-trigger (ms)**: How much data before the trigger to include (default: 500ms)
+- **Post-trigger (ms)**: How long to continue recording after release (default: 500ms)
+- **Merge window (ms)**: Time window for merging consecutive triggers (default: 500ms)
+- **Ring buffer (seconds)**: Continuous input buffer size (default: 5s)
 
 ### Data Stored Per Recording
 - Timestamp (high-resolution ticks)
@@ -273,7 +288,7 @@ When disabled:
 ### 合并行为
 
 启用""合并连续触发""时：
-- 如果新的触发在上一次触发结束后的合并窗口内（默认：2000ms）发生
+- 如果新的触发在上一次触发结束后的合并窗口内（默认：500ms）发生
 - 两次录制会合并为一条连续的录制
 - 这对连发武器或点射模式非常有用
 
@@ -282,9 +297,10 @@ When disabled:
 - 第一次的后缓冲和第二次的前缓冲在时间上可能重叠
 
 ### 时间参数
-- **触发前时长(ms)**：触发前包含多少数据（默认：1000ms）
-- **触发后时长(ms)**：释放后继续录制多长时间（默认：2000ms）
-- **合并窗口 (ms)**：合并连续触发的时间窗口（默认：2000ms）
+- **触发前时长(ms)**：触发前包含多少数据（默认：500ms）
+- **触发后时长(ms)**：释放后继续录制多长时间（默认：500ms）
+- **合并窗口 (ms)**：合并连续触发的时间窗口（默认：500ms）
+- **环形缓冲区(秒)**：持续输入缓冲区大小（默认：5秒）
 
 ### 每条录制存储的数据
 - 时间戳（高精度Ticks）
@@ -524,13 +540,17 @@ Warning: The transparent overlay mode uses standard Windows APIs (WS_EX_TRANSPAR
 5. Restart the application
 
 ### Q: The sampling rate seems low?
-**A:** The actual sampling rate depends on:
-- Your controller's hardware polling rate (usually 125Hz-1000Hz)
+**A:** The app offers three sampling performance levels in Settings:
+- **Low (50Hz)**: Uses Task.Delay, minimal CPU usage, suitable for basic track drawing
+- **Medium (1000Hz)**: Uses hybrid sleep + spin-wait, moderate CPU usage
+- **High (8000Hz)**: Uses pure spin-wait, saturates one CPU core for maximum precision
+
+The actual achieved rate also depends on:
+- Your controller's hardware polling rate
 - USB connection type (USB is generally faster than Bluetooth)
 - System load and other running applications
-- The configured target rate in Settings
 
-For best results, use a wired USB connection.
+For best results, use a wired USB connection and Medium or High performance level.
 
 ### Q: Can I use this with any game?
 **A:** Yes! This tool reads controller input at the system level, independent of any game. It works with any game that accepts controller input. The tool does not interact with game processes in any way.
@@ -546,10 +566,15 @@ For best results, use a wired USB connection.
 However, some anti-cheat systems may flag overlay windows. Use the independent window mode if concerned.
 
 ### Q: How much disk space do recordings use?
-**A:** Each sample is approximately 28 bytes. At 240Hz sampling:
-- 1 second = 6.7 KB
-- A typical 4-second recording = 27 KB
-- 1000 recordings = 27 MB
+**A:** Each sample is approximately 28 bytes. At 1000Hz (Medium) sampling:
+- 1 second = 28 KB
+- A typical 4-second recording = 112 KB
+- 1000 recordings ≈ 112 MB
+
+At 50Hz (Low) sampling:
+- 1 second = 1.4 KB
+- A typical 4-second recording = 5.6 KB
+- 1000 recordings ≈ 5.6 MB
 
 Storage is very efficient thanks to binary serialization.
 
@@ -579,13 +604,17 @@ The goal is to use this tool to identify and reduce these variations through pra
 5. 重启应用程序
 
 ### Q: 采样率似乎很低？
-**A:** 实际采样率取决于：
-- 手柄硬件的轮询率（通常125Hz-1000Hz）
+**A:** 应用在设置中提供三档采样性能：
+- **低 (50Hz)**：使用Task.Delay，CPU占用极低，适合基本轨迹绘制
+- **中 (1000Hz)**：使用混合休眠+自旋等待，CPU占用适中
+- **高 (8000Hz)**：使用纯自旋等待，满载单核以获得极致精度
+
+实际达到的采样率还取决于：
+- 手柄硬件的轮询率
 - USB连接类型（USB通常比蓝牙快）
 - 系统负载和其他运行的应用程序
-- 设置中配置的目标采样率
 
-为获得最佳效果，请使用有线USB连接。
+为获得最佳效果，请使用有线USB连接并选择中或高性能档位。
 
 ### Q: 可以配合任何游戏使用吗？
 **A:** 是的！本工具在系统层面读取手柄输入，独立于任何游戏。它适用于任何接受手柄输入的游戏。本工具不会以任何方式与游戏进程交互。
@@ -601,10 +630,15 @@ The goal is to use this tool to identify and reduce these variations through pra
 但是，某些反作弊系统可能会标记悬浮窗。如有顾虑，请使用独立窗口模式。
 
 ### Q: 录制占用多少磁盘空间？
-**A:** 每个采样点约28字节。以240Hz采样率计算：
-- 1秒 = 6.7 KB
-- 典型的4秒录制 = 27 KB
-- 1000条录制 = 27 MB
+**A:** 每个采样点约28字节。以1000Hz（中档）采样率计算：
+- 1秒 = 28 KB
+- 典型的4秒录制 = 112 KB
+- 1000条录制 ≈ 112 MB
+
+以50Hz（低档）采样率计算：
+- 1秒 = 1.4 KB
+- 典型的4秒录制 = 5.6 KB
+- 1000条录制 ≈ 5.6 MB
 
 得益于二进制序列化，存储非常高效。
 
