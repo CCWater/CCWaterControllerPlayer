@@ -85,9 +85,17 @@ public enum RecordStatus
     Permanent = 1
 }
 
+public enum SamplingPerformance
+{
+    Low,
+    Medium,
+    High
+}
+
 public class AppSettings
 {
-    public int SamplingRateHz { get; set; } = 1000;
+    public SamplingPerformance SamplingPerformance { get; set; } = SamplingPerformance.Low;
+    public int SamplingRateHz { get; set; } = 50;
     public bool AutoDetectSamplingRate { get; set; } = true;
     public RecordingTriggerConfig TriggerConfig { get; set; } = new();
     public OverlayConfig OverlayConfig { get; set; } = new();
@@ -97,4 +105,12 @@ public class AppSettings
     public string Language { get; set; } = string.Empty;
     public WindowState MainWindowState { get; set; } = new();
     public bool HasConfiguredTrigger { get; set; }
+
+    public static int GetSamplingRateForPerformance(SamplingPerformance performance) => performance switch
+    {
+        SamplingPerformance.Low => 50,
+        SamplingPerformance.Medium => 1000,
+        SamplingPerformance.High => 8000,
+        _ => 50
+    };
 }

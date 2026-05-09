@@ -23,8 +23,9 @@ public class XInputControllerService : IControllerService
     public bool IsRunning => _isRunning;
     public int DetectedSamplingRate => _detectedSamplingRate;
 
-    public int TargetPollingRateHz { get; set; } = 1000;
+    public int TargetPollingRateHz { get; set; } = 50;
     public bool AutoDetect { get; set; } = true;
+    public SamplingPerformance Performance { get; set; } = SamplingPerformance.Low;
 
     public List<ControllerDeviceInfo> EnumerateDevices()
     {
@@ -96,8 +97,7 @@ public class XInputControllerService : IControllerService
     {
         int sampleCount = 0;
         long lastRateCheckTicks = _stopwatch.ElapsedTicks;
-        int rate = Math.Clamp(TargetPollingRateHz, 100, 2000);
-        double intervalMs = 1000.0 / rate;
+        long intervalTicks = Stopwatch.Frequency / TargetPollingRateHz;
 
         while (!ct.IsCancellationRequested)
         {
@@ -147,15 +147,32 @@ public class XInputControllerService : IControllerService
                 lastRateCheckTicks = _stopwatch.ElapsedTicks;
             }
 
-            double elapsedMs = (_stopwatch.ElapsedTicks - loopStart) * 1000.0 / Stopwatch.Frequency;
-            double sleepMs = intervalMs - elapsedMs;
-            if (sleepMs >= 1.0)
+            long targetEnd = loopStart + intervalTicks;
+            switch (Performance)
             {
-                await Task.Delay((int)sleepMs, ct);
-            }
-            else
-            {
-                await Task.Delay(1, ct);
+                case SamplingPerformance.Low:
+                    double sleepMs = (targetEnd - _stopwatch.ElapsedTicks) * 1000.0 / Stopwatch.Frequency;
+                    if (sleepMs >= 1.0)
+                        await Task.Delay((int)sleepMs, ct);
+                    break;
+
+                case SamplingPerformance.Medium:
+                    while (_stopwatch.ElapsedTicks < targetEnd)
+                    {
+                        long remaining = targetEnd - _stopwatch.ElapsedTicks;
+                        if (remaining > Stopwatch.Frequency / 100)
+                            Thread.Sleep(1);
+                        else
+                            Thread.SpinWait(20);
+                    }
+                    break;
+
+                case SamplingPerformance.High:
+                    while (_stopwatch.ElapsedTicks < targetEnd)
+                    {
+                        Thread.SpinWait(10);
+                    }
+                    break;
             }
         }
     }

@@ -48,6 +48,35 @@ public partial class SettingsViewModel : ViewModelBase
     private TriggerButtonOption? _selectedTriggerButton;
 
     [ObservableProperty]
+    private SamplingPerformance _samplingPerformance;
+
+    public bool IsPerformanceLow
+    {
+        get => SamplingPerformance == SamplingPerformance.Low;
+        set { if (value) SamplingPerformance = SamplingPerformance.Low; }
+    }
+
+    public bool IsPerformanceMedium
+    {
+        get => SamplingPerformance == SamplingPerformance.Medium;
+        set { if (value) SamplingPerformance = SamplingPerformance.Medium; }
+    }
+
+    public bool IsPerformanceHigh
+    {
+        get => SamplingPerformance == SamplingPerformance.High;
+        set { if (value) SamplingPerformance = SamplingPerformance.High; }
+    }
+
+    public string SamplingPerformanceDescription => SamplingPerformance switch
+    {
+        SamplingPerformance.Low => LocalizationService.Instance.Strings.SamplingPerfLowDesc,
+        SamplingPerformance.Medium => LocalizationService.Instance.Strings.SamplingPerfMediumDesc,
+        SamplingPerformance.High => LocalizationService.Instance.Strings.SamplingPerfHighDesc,
+        _ => string.Empty
+    };
+
+    [ObservableProperty]
     private int _samplingRateHz;
 
     [ObservableProperty]
@@ -87,10 +116,18 @@ public partial class SettingsViewModel : ViewModelBase
         PropertyChanged += OnPropertyAutoSave;
     }
 
+    partial void OnSamplingPerformanceChanged(SamplingPerformance value)
+    {
+        OnPropertyChanged(nameof(IsPerformanceLow));
+        OnPropertyChanged(nameof(IsPerformanceMedium));
+        OnPropertyChanged(nameof(IsPerformanceHigh));
+        OnPropertyChanged(nameof(SamplingPerformanceDescription));
+    }
+
     private void OnPropertyAutoSave(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         if (_isLoading) return;
-        if (e.PropertyName is nameof(SelectedTriggerButton) or nameof(SamplingRateHz) or nameof(AutoDetectSamplingRate)
+        if (e.PropertyName is nameof(SelectedTriggerButton) or nameof(SamplingPerformance) or nameof(SamplingRateHz) or nameof(AutoDetectSamplingRate)
             or nameof(PreTriggerMs) or nameof(PostTriggerMs) or nameof(MergeEnabled) or nameof(MergeWindowMs)
             or nameof(TriggerThreshold) or nameof(TriggerMode) or nameof(DefaultTrackedStick))
         {
@@ -119,6 +156,7 @@ public partial class SettingsViewModel : ViewModelBase
     {
         _isLoading = true;
         var s = _settingsService.Settings;
+        SamplingPerformance = s.SamplingPerformance;
         SamplingRateHz = s.SamplingRateHz;
         AutoDetectSamplingRate = s.AutoDetectSamplingRate;
         PreTriggerMs = s.TriggerConfig.PreTriggerMs;
@@ -147,7 +185,8 @@ public partial class SettingsViewModel : ViewModelBase
     private async Task SaveSettingsAsync()
     {
         var s = _settingsService.Settings;
-        s.SamplingRateHz = SamplingRateHz;
+        s.SamplingPerformance = SamplingPerformance;
+        s.SamplingRateHz = AppSettings.GetSamplingRateForPerformance(SamplingPerformance);
         s.AutoDetectSamplingRate = AutoDetectSamplingRate;
         s.TriggerConfig.PreTriggerMs = PreTriggerMs;
         s.TriggerConfig.PostTriggerMs = PostTriggerMs;

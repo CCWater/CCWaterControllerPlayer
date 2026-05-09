@@ -13,6 +13,7 @@ public interface IControllerService : IDisposable
     bool IsRunning { get; }
     int DetectedSamplingRate { get; }
     int TargetPollingRateHz { get; set; }
+    SamplingPerformance Performance { get; set; }
 
     Task StartAsync(CancellationToken cancellationToken = default);
     Task StopAsync();

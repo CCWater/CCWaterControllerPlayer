@@ -102,4 +102,12 @@ public class LangStrings_ZH : LangStrings
     public override string FirstRunMessage => "检测到您尚未配置开火键（录制触发按键），是否现在前往设置？";
     public override string FirstRunGoSettings => "前往设置";
     public override string FirstRunSkip => "稍后再说";
+
+    public override string SettingsSamplingPerformance => "采样性能";
+    public override string SamplingPerfLow => "低 (50Hz)";
+    public override string SamplingPerfMedium => "中 (1000Hz)";
+    public override string SamplingPerfHigh => "高 (8000Hz)";
+    public override string SamplingPerfLowDesc => "CPU占用极低，适合轨迹绘制";
+    public override string SamplingPerfMediumDesc => "CPU占用适中，精度较高";
+    public override string SamplingPerfHighDesc => "CPU占用较高（满载单核），极致精度";
 }

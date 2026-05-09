@@ -407,10 +407,12 @@ public partial class MainViewModel : ViewModelBase
     private void ApplySettings()
     {
         var settings = _settingsService.Settings;
+        settings.SamplingRateHz = AppSettings.GetSamplingRateForPerformance(settings.SamplingPerformance);
 
         if (_controllerService != null)
         {
-            _controllerService.TargetPollingRateHz = Math.Clamp(settings.SamplingRateHz, 100, 2000);
+            _controllerService.TargetPollingRateHz = settings.SamplingRateHz;
+            _controllerService.Performance = settings.SamplingPerformance;
         }
 
         _recordingService.UpdateSettings(settings);
@@ -494,13 +496,15 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
-            int targetRate = Math.Clamp(_settingsService.Settings.SamplingRateHz, 100, 2000);
+            var perf = _settingsService.Settings.SamplingPerformance;
+            int targetRate = AppSettings.GetSamplingRateForPerformance(perf);
 
             var xinput = new XInputControllerService();
             var devices = xinput.EnumerateDevices();
             if (devices.Count > 0)
             {
                 xinput.TargetPollingRateHz = targetRate;
+                xinput.Performance = perf;
                 _controllerService = xinput;
             }
             else
@@ -511,6 +515,7 @@ public partial class MainViewModel : ViewModelBase
                 if (devices.Count > 0)
                 {
                     dinput.TargetPollingRateHz = targetRate;
+                    dinput.Performance = perf;
                     _controllerService = dinput;
                 }
                 else

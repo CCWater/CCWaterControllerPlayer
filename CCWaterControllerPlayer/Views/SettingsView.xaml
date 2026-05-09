@@ -87,20 +87,27 @@
                                FontSize="11" FontWeight="Bold" 
                                Foreground="{StaticResource TextMutedBrush}" Margin="0,0,0,12"/>
 
+                    <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsSamplingPerformance}" 
+                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <RadioButton Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SamplingPerfLow}"
+                                     IsChecked="{Binding IsPerformanceLow}"
+                                     Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,16,0"/>
+                        <RadioButton Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SamplingPerfMedium}"
+                                     IsChecked="{Binding IsPerformanceMedium}"
+                                     Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,16,0"/>
+                        <RadioButton Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SamplingPerfHigh}"
+                                     IsChecked="{Binding IsPerformanceHigh}"
+                                     Foreground="{StaticResource TextSecondaryBrush}"/>
+                    </StackPanel>
+
+                    <TextBlock Text="{Binding SamplingPerformanceDescription}" 
+                               Foreground="{StaticResource TextMutedBrush}" FontSize="11" FontStyle="Italic" Margin="0,0,0,12"/>
+
                     <CheckBox Content="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsAutoDetectRate}" 
                               IsChecked="{Binding AutoDetectSamplingRate}"
                               Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,8"/>
-
-                    <Grid Margin="0,0,0,12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="160"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Source={x:Static services:LocalizationService.Instance}, Path=Strings.SettingsTargetRate}" 
-                                   Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
-                        <TextBox Grid.Column="1" Style="{StaticResource DarkTextBoxStyle}" 
-                                 Text="{Binding SamplingRateHz, UpdateSourceTrigger=PropertyChanged}"/>
-                    </Grid>
                 </StackPanel>
             </Border>
 

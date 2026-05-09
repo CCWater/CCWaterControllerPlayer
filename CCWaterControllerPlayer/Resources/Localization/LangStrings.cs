@@ -102,4 +102,12 @@ public abstract class LangStrings
     public abstract string FirstRunMessage { get; }
     public abstract string FirstRunGoSettings { get; }
     public abstract string FirstRunSkip { get; }
+
+    public abstract string SettingsSamplingPerformance { get; }
+    public abstract string SamplingPerfLow { get; }
+    public abstract string SamplingPerfMedium { get; }
+    public abstract string SamplingPerfHigh { get; }
+    public abstract string SamplingPerfLowDesc { get; }
+    public abstract string SamplingPerfMediumDesc { get; }
+    public abstract string SamplingPerfHighDesc { get; }
 }

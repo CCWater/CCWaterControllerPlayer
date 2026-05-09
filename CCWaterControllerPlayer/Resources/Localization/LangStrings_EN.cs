@@ -102,4 +102,12 @@ public class LangStrings_EN : LangStrings
     public override string FirstRunMessage => "No fire button (recording trigger) has been configured yet. Would you like to go to Settings now?";
     public override string FirstRunGoSettings => "Go to Settings";
     public override string FirstRunSkip => "Later";
+
+    public override string SettingsSamplingPerformance => "Sampling Performance";
+    public override string SamplingPerfLow => "Low (50Hz)";
+    public override string SamplingPerfMedium => "Medium (1000Hz)";
+    public override string SamplingPerfHigh => "High (8000Hz)";
+    public override string SamplingPerfLowDesc => "Minimal CPU, suitable for track drawing";
+    public override string SamplingPerfMediumDesc => "Moderate CPU, higher precision";
+    public override string SamplingPerfHighDesc => "High CPU (saturates one core), maximum precision";
 }
