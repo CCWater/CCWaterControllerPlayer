@@ -121,6 +121,11 @@ public partial class MainViewModel : ViewModelBase
             await LoadLatestRecordToOverlay();
         }
 
+        if (_settingsService.Settings.ImageOverlayConfig.Enabled)
+        {
+            ShowImageOverlay();
+        }
+
         StartAutoDetect();
 
         if (!_settingsService.Settings.HasConfiguredTrigger)
@@ -344,6 +349,8 @@ public partial class MainViewModel : ViewModelBase
         _imageOverlayWindow.Configure(config);
         _imageOverlayWindow.Show();
         IsImageOverlayVisible = true;
+        _settingsService.Settings.ImageOverlayConfig.Enabled = true;
+        ScheduleSave();
     }
 
     private void SyncImageOverlayPositionToSettings()
@@ -361,6 +368,8 @@ public partial class MainViewModel : ViewModelBase
     {
         _imageOverlayWindow?.Hide();
         IsImageOverlayVisible = false;
+        _settingsService.Settings.ImageOverlayConfig.Enabled = false;
+        ScheduleSave();
     }
 
     private void PinImageOverlay()
@@ -682,6 +691,7 @@ public partial class MainViewModel : ViewModelBase
         if (_imageOverlayWindow != null)
         {
             _imageOverlayWindow.SavePosition(_settingsService.Settings.ImageOverlayConfig);
+            _settingsService.Settings.ImageOverlayConfig.Enabled = IsImageOverlayVisible;
             _imageOverlayWindow.Close();
             _imageOverlayWindow = null;
         }

@@ -61,7 +61,7 @@ public enum OverlayMode
 
 public class ImageOverlayConfig
 {
-    public bool Enabled { get; set; }
+    public bool Enabled { get; set; } = true;
     public int Width { get; set; } = 300;
     public int Height { get; set; } = 300;
     public int PositionX { get; set; } = 400;
