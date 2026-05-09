@@ -89,7 +89,6 @@ public partial class OverlayWindow : Window
     public void Pin()
     {
         _isPinned = true;
-        TitleBar.Visibility = Visibility.Collapsed;
         SetClickThrough(true);
         OnPinStateChanged?.Invoke();
     }
@@ -98,7 +97,6 @@ public partial class OverlayWindow : Window
     {
         _isPinned = false;
         SetClickThrough(false);
-        TitleBar.Visibility = Visibility.Visible;
         OnPinStateChanged?.Invoke();
     }
 
